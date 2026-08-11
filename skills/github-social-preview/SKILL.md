@@ -17,7 +17,7 @@ Create a 1280×640px PNG for a GitHub repository's social preview. Use image gen
    ```
 
 3. Choose a Korean font with a clear, permissive redistribution/use license. Do not include a font file in this skill or repository; obtain the font from its official source and pass its local path to the script.
-4. Run the included script. It crops the background, lays out accurate text, writes a PNG, strips metadata by default, then fails if EXIF, ICC, IPTC, or XMP metadata remains.
+4. Run the included script. It crops the background, lays out accurate text, writes a palette PNG, removes non-image PNG chunks, and fails unless the result is below the 900 KB target.
 
    ```bash
    node scripts/create-social-preview.js \
@@ -31,7 +31,7 @@ Create a 1280×640px PNG for a GitHub repository's social preview. Use image gen
      --topics "DEVELOPMENT  ·  RESEARCH  ·  WRITING"
    ```
 
-5. Inspect the final image. Confirm its dimensions are exactly 1280×640px, all copy is legible, and no text enters the outer 60px safe area.
+5. Inspect the final image. Confirm its dimensions are exactly 1280×640px, below 1 MB, all copy is legible, and no text enters the outer 60px safe area.
 
 Use `--theme dark` for dark or cool backgrounds and `--theme warm` for light or warm backgrounds. The warm theme uses deep plum text instead of white so it retains contrast without looking out of place.
 
@@ -41,4 +41,5 @@ Use `--theme dark` for dark or cool backgrounds and `--theme warm` for light or 
 - Keep the composition simple: dark or muted backdrop, left-aligned text, visual object cluster on the right.
 - Use a locally supplied font file only. Never rely on an unverified system font for Korean text.
 - Keep social-card text brief: one title, one explanatory line, and optional topic labels.
-- Do not retain image metadata. The output must contain no EXIF, ICC profile, IPTC, or XMP data.
+- Do not retain image metadata. Keep only the PNG image chunks required for rendering.
+- Keep the final file below 1 MB; the script targets 900 KB to leave a safety margin.

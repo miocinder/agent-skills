@@ -41,6 +41,27 @@ const themes = {
   },
 };
 
+const PNG_SIGNATURE_LENGTH = 8;
+const MAX_OUTPUT_BYTES = 900_000;
+const PNG_IMAGE_CHUNKS = new Set(['IHDR', 'PLTE', 'tRNS', 'IDAT', 'IEND']);
+
+function stripPngMetadata(buffer) {
+  const chunks = [buffer.subarray(0, PNG_SIGNATURE_LENGTH)];
+  let offset = PNG_SIGNATURE_LENGTH;
+
+  while (offset + 12 <= buffer.length) {
+    const length = buffer.readUInt32BE(offset);
+    const type = buffer.subarray(offset + 4, offset + 8).toString('ascii');
+    const chunkEnd = offset + 12 + length;
+    if (chunkEnd > buffer.length) throw new Error('Invalid PNG chunk length.');
+    if (PNG_IMAGE_CHUNKS.has(type)) chunks.push(buffer.subarray(offset, chunkEnd));
+    offset = chunkEnd;
+    if (type === 'IEND') break;
+  }
+
+  return Buffer.concat(chunks);
+}
+
 function textLayer(text, width, fontSize, weight, color) {
   return sharp({
     text: {
@@ -75,7 +96,7 @@ async function main() {
     textLayer(args.topics || '', 620, 20, 'Medium', theme.topics),
   ]);
 
-  await sharp(args.input)
+  const rendered = await sharp(args.input)
     .resize(1280, 640, { fit: 'cover', position: 'centre' })
     .composite([
       { input: overlay, top: 0, left: 0 },
@@ -84,14 +105,17 @@ async function main() {
       { input: subtitle, top: 272, left: 112 },
       { input: topics, top: 416, left: 112 },
     ])
-    .png({ compressionLevel: 9, adaptiveFiltering: true })
-    .toFile(output);
+    .png({ palette: true, colours: 256, quality: 90, dither: 1, compressionLevel: 9, adaptiveFiltering: true })
+    .toBuffer();
+  await fs.promises.writeFile(output, stripPngMetadata(rendered));
 
   const info = await sharp(output).metadata();
+  const { size } = await fs.promises.stat(output);
   const remainingMetadata = ['exif', 'icc', 'iptc', 'xmp'].filter((field) => info[field]);
   if (info.width !== 1280 || info.height !== 640) throw new Error(`Invalid output dimensions: ${info.width}×${info.height}`);
   if (remainingMetadata.length) throw new Error(`Metadata was not removed: ${remainingMetadata.join(', ')}`);
-  console.log(`Created ${output} (${info.width}×${info.height}, metadata removed)`);
+  if (size >= MAX_OUTPUT_BYTES) throw new Error(`Output exceeds the 900 KB target: ${size} bytes.`);
+  console.log(`Created ${output} (${info.width}×${info.height}, ${size} bytes, metadata removed)`);
 }
 
 main().catch((error) => {
