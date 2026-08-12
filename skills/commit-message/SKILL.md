@@ -1,11 +1,11 @@
 ---
 name: commit-message
-description: Analyze Git changes and write Korean Conventional Commit messages with a required body. Use when the user asks for a commit-message recommendation, commit plan, staging, or commit.
+description: Analyze Git changes, run public-repository pre-commit checks, and write Korean Conventional Commit messages with a required body. Use when the user asks for a commit-message recommendation, commit plan, staging, or commit.
 ---
 
 # Commit Message
 
-Create focused commits whose messages describe the actual changes. Write the subject and body in Korean; write the type and optional scope in lowercase English.
+Create focused commits whose messages describe the actual changes. Write the subject and body in Korean; write the type and optional scope in lowercase English. Before staging or committing, protect the public repository from sensitive, out-of-scope, or unsuitable files.
 
 ## Authority and scope
 
@@ -13,9 +13,24 @@ Create focused commits whose messages describe the actual changes. Write the sub
 2. Do not change Git state unless the user explicitly asks to `stage`, `commit`, `스테이징`, or `커밋`. Otherwise, only recommend a message that matches the changes.
 3. A staging request authorizes index changes only. A commit request authorizes staging only the changes needed for that commit and creating one new commit.
 4. Recommend separate commits when independent intents can be safely separated.
-5. Before committing, run checks appropriate to the repository instructions. Do not bypass hooks or checks.
-6. When authorized, stage explicit paths or hunks, run `git diff --cached --check`, inspect the complete staged diff, and commit only when it matches the message.
+5. Before committing, run checks appropriate to the repository instructions, including the public repository pre-commit audit. Do not bypass hooks or checks.
+6. When authorized, stage explicit paths or hunks, run `git diff --cached --check`, inspect the complete staged diff, repeat the public repository pre-commit audit, and commit only when it matches the message.
 7. Do not amend, rebase, reset, discard changes, tag, push, or publish unless separately and explicitly requested.
+
+## Public repository pre-commit audit
+
+Before staging or committing, inspect the exact files in scope. Before committing, repeat the audit against the complete staged diff. Check for:
+
+- API keys, tokens, passwords, private keys, credentials, and connection strings;
+- user names, account details, email addresses, phone numbers, and other personal or contact information;
+- local absolute paths, internal domains, private URLs, hostnames, system names, and other internal information;
+- generated temporary files, dependency directories, build output, oversized artifacts, and other files that do not belong in the repository;
+- third-party images, fonts, code, or other assets whose license, attribution, or permission is unknown;
+- changes outside the user's requested scope, including unrelated staged changes.
+
+Use focused pattern checks and manual diff inspection; do not treat an absence of pattern matches as sufficient evidence by itself. Inspect the surrounding context of every potential match so ordinary documentation terms such as `token` or `key` are not reported as secrets.
+
+If the audit finds sensitive or publicly unsuitable content, do not stage or commit that content. Report its file and location, explain the risk, and wait for the user's direction. Do not redact, delete, relocate, or otherwise alter the content unless the user explicitly asks. If existing staged changes are mixed with the requested scope, clarify the boundary before changing the index.
 
 ## Message format
 
