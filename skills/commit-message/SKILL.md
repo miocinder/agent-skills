@@ -37,13 +37,15 @@ If the audit finds sensitive or publicly unsuitable content, do not stage or com
 ```text
 <type>[(scope)]: <Korean summary>
 
-<Korean body explaining what changed and why>
-<Add one line for impact or verification when useful>
+<첫 번째 한국어 Body 문장>
+<두 번째 한국어 Body 문장>
+<필요하면 영향 또는 검증을 설명하는 한 문장>
 ```
 
 - Write a concise one-line Korean subject without a final period.
 - Always include a body. Explain the change and its reason in one to three sentences; do not repeat a list of filenames.
-- Add impact, compatibility, or verification details in the body when useful.
+- Put each Body sentence on its own line. Never join multiple sentences into one long Body line.
+- Add impact, compatibility, or verification details as a separate Body line when useful.
 - Do not use footers.
 - Use a scope only when a stable component name adds context, such as `readme`, `github-social-preview`, or `ci`. Omit it for repository-wide changes.
 - Preserve canonical identifiers, paths, filenames, commands, and API names.
