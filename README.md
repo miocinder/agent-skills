@@ -15,3 +15,14 @@ npx skills add miocinder/agent-skills --list
 # Codex에 전역 설치
 npx skills add miocinder/agent-skills --agent codex --global
 ```
+
+## 업데이트
+
+`npx skills`로 설치한 스킬은 원본 저장소와 스킬 경로를 추적할 수 있을 때 업데이트할 수 있습니다.
+
+```bash
+npx skills update <skill-name>  # 특정 스킬만 업데이트
+npx skills update               # 설치된 스킬 전체 업데이트
+npx skills update -g            # 전역 설치 스킬만 업데이트
+npx skills update -p            # 프로젝트 설치 스킬만 업데이트
+```
