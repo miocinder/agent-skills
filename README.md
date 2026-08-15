@@ -22,6 +22,9 @@ npx skills add miocinder/agent-skills --list
 
 # Codex에 전역 설치
 npx skills add miocinder/agent-skills --agent codex --global
+
+# 현재 프로젝트에만 설치
+npx skills add miocinder/agent-skills --agent codex
 ```
 
 ## 업데이트
