@@ -16,6 +16,20 @@ Create focused commits whose messages describe the actual changes. Write the sub
 5. Before committing, run checks appropriate to the repository instructions, including the public repository pre-commit audit. Do not bypass hooks or checks.
 6. When authorized, stage explicit paths or hunks, run `git diff --cached --check`, inspect the complete staged diff, repeat the public repository pre-commit audit, and commit only when it matches the message.
 7. Do not amend, rebase, reset, discard changes, tag, push, or publish unless separately and explicitly requested.
+8. Create, replace, or repair an `AGENTS.md`/`CLAUDE.md` symbolic link only when the user explicitly requests it. Treat this as an index change; do not overwrite an existing regular file or unrelated staged change without explicit authorization.
+
+## Agent instruction symbolic links
+
+When a user explicitly asks to make `CLAUDE.md` point to `AGENTS.md`, use a Git symbolic-link entry rather than duplicating the instructions. First confirm that the target exists at the requested relative path and inspect the current index and worktree entries for `CLAUDE.md`. If `CLAUDE.md` is an existing regular file, stop and ask whether replacing it is intended.
+
+On Windows, creating an operating-system symbolic link can require permissions. It is acceptable to write the link directly to Git's index instead. In `cmd.exe`, store the exact target-path bytes (without a trailing newline) as a blob, then register it with mode `120000`:
+
+```text
+<nul set /p "=AGENTS.md" | git hash-object -w --stdin
+git update-index --add --cacheinfo 120000,<blob-id>,CLAUDE.md
+```
+
+Use the blob ID printed by the first command in the second command. The blob content must be the relative target path, such as `AGENTS.md`, not that file's contents. Verify the staged entry with `git ls-files -s -- CLAUDE.md` and confirm it has mode `120000`; inspect the complete staged diff before committing. The link does not need updating when `AGENTS.md`'s contents change, but it must be updated if the target is renamed or moved.
 
 ## Public repository pre-commit audit
 
