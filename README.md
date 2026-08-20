@@ -12,8 +12,7 @@ Codex를 주 실행 환경으로 사용하는 개인용 에이전트 스킬 모�
 | [commit-message](./skills/commit-message/README.md) | Git 변경과 공개 저장소 위험을 점검하고 한국어 Conventional Commit 메시지를 작성합니다. |
 | [github-social-preview](./skills/github-social-preview/README.md) | GitHub 저장소에 사용할 1280×640 소셜 미리보기 이미지를 제작합니다. |
 | [image-processing](./skills/image-processing/README.md) | Sharp를 이용해 이미지를 리사이즈·크롭·변환·압축하고 결과를 검증합니다. |
-| [static-mockup](./skills/static-mockup/README.md) | 프레임워크 없이 HTML·CSS·JavaScript로 반응형 정적 목업을 제작합니다. |
-| [web-design-quality-audit](./skills/web-design-quality-audit/README.md) | 웹 인터페이스의 위계, 접근성, 반응형 설계와 시각적 완성도를 검토하고 개선합니다. |
+| [web-design-workflow](./skills/web-design-workflow/README.md) | 프로젝트의 디자인 시스템을 따라 웹 인터페이스를 생성·검토·개선하고 결과를 검증합니다. |
 
 ## 설치
 

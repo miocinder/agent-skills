@@ -5,7 +5,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 function usage() {
-  return 'Usage: node hash-assets.js <file...> [--length <1-32>]';
+  return [
+    'Usage: node hash-assets.js <file...> [--length <1-32>]',
+    'Input paths are resolved from the current working directory.',
+  ].join('\n');
 }
 
 function parseArgs(values) {
